@@ -1,0 +1,6 @@
+== Useful Code
+
+Contents:
+
+OptionParser.hpp, OptionParser.cpp
+   Command line option processing.
