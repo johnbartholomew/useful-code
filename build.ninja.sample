@@ -1,3 +1,6 @@
+# This sample build.ninja file is released into the public domain,
+# WITHOUT WARRANTY OF ANY KIND
+
 builddir = build
 
 # tools
