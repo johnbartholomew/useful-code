@@ -1,0 +1,63 @@
+builddir = build
+
+# tools
+CC = gcc
+CXX = g++
+AR = ar
+ASCIIDOC = asciidoc
+
+# flags for C and C++
+CCFLAGS_WARN = -pedantic -Wall -Wextra
+CCFLAGS_CODEGEN = -O0 -g
+CCFLAGS_DEF = -pthread -D_XOPEN_SOURCE=500
+CCFLAGS_INC = 
+CCFLAGS_LINK = -pthread
+
+# flags for C
+CFLAGS_LANG = -std=c99
+CFLAGS_ALL = $CFLAGS_LANG $CCFLAGS_WARN $CCFLAGS_CODEGEN $CCFLAGS_DEF $CCFLAGS_INC $CPPFLAGS $CFLAGS
+CFLAGS_LINK = $CCFLAGS_CODEGEN $CCFLAGS_LINK $CFLAGS
+
+# flags for C++
+CXXFLAGS_LANG = -std=c++98
+CXXFLAGS_ALL = $CXXFLAGS_LANG $CCFLAGS_WARN $CCFLAGS_CODEGEN $CCFLAGS_DEF $CCFLAGS_INC $CPPFLAGS $CXXFLAGS
+CXXFLAGS_LINK = $CCFLAGS_CODEGEN $CCFLAGS_LINK $CXXFLAGS
+
+# flags for asciidoc
+ASCIIDOC_FLAGS = -a numbered -a toc -b xhtml11 -d article
+
+rule cc
+  description = CC $in
+  depfile = $out.d
+  command = $CC $CFLAGS_ALL $EXTRAFLAGS -MMD -MF $out.d -o $out -c $in
+
+rule cxx
+  description = CXX $in
+  depfile = $out.d
+  command = $CXX $CXXFLAGS_ALL $EXTRAFLAGS -MMD -MF $out.d -o $out -c $in
+
+rule cclink
+  description = LINK(CC) $out
+  command = $CC $CFLAGS_LINK $EXTRAFLAGS -o $out $in $LIBS
+
+rule cxxlink
+  description = LINK(CXX) $out
+  command = $CXX $CXXFLAGS_LINK $EXTRAFLAGS -o $out $in $LIBS
+
+rule ar
+  description = AR $out
+  command = $AR rcs $out $in
+
+rule asciidoc
+  description = ASCIIDOC $in
+  command = $ASCIIDOC $ASCIIDOC_FLAGS -o $out $in
+
+# fill in build rules below
+
+build $builddir/src/???.c.o: cc src/???.c
+build ???: cclink $builddir/src/???.c.o
+  LIBS = -lm
+
+build doc/???.html: asciidoc doc/???.asciidoc
+
+default ???
