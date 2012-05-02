@@ -6,3 +6,12 @@ Contents:
 
 OptionParser.hpp, OptionParser.cpp
    Command line option processing.
+
+utf8.h, utf8.c
+   C99 utf-8 decoder/verifier and encoder.
+   contains code from Bjoern Hoehrmann
+   http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+
+build.ninja.sample
+   Sample build.ninja file (I copy this into new projects
+   and then adjust as necessary)
