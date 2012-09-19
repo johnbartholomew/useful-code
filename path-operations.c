@@ -69,6 +69,34 @@ void basename(char* RESTRICT buf, size_t bufsize, const char* RESTRICT path)
    assert(buf);
    assert(bufsize >= 2);
    assert(bufsize > strlen(path));
+   strcpy(buf, path);
+   normalise_path(buf);
+
+   if (*buf) {
+      const char* begin = strrchr(buf, '/');
+      if (!begin) { begin = buf; }
+      if (*begin == '/') { ++begin; }
+      if (*begin) {
+         size_t len = strchr(begin, '\0') - begin;
+         assert(begin >= buf);
+         assert(begin[len] == '\0');
+         memmove(buf, begin, len+1);
+      } else {
+         buf[0] = '/';
+         buf[1] = '\0';
+      }
+   } else {
+      buf[0] = '.';
+      buf[1] = '\0';
+   }
+}
+
+void basename_any(char* RESTRICT buf, size_t bufsize, const char* RESTRICT path)
+{
+   assert(path);
+   assert(buf);
+   assert(bufsize >= 2);
+   assert(bufsize > strlen(path));
 
    const char* begin = strrchr(path, '/');
    if (!begin) { begin = path; }
