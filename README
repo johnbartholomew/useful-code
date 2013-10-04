@@ -12,6 +12,23 @@ utf8.h, utf8.c
    contains code from Bjoern Hoehrmann
    http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
 
+lookup3.c
+   One of Bob Jenkins' string/blob hash functions.
+   http://www.burtleburtle.net/bob/c/lookup3.c
+
+embed-data.sh
+   Script to embed data files into a object (.o) file,
+   with controllable data alignment. That data can then
+   be used from C or C++ (it's just a big static array).
+
+rand.h, rand.c
+   Complementary Multiply With Carry and XOR-shift RNGs.
+
+path-operations.c
+   Implementations of dirname and basename. Does not try
+   to conform to POSIX. Don't use these, use the functions
+   provided by your platform.
+
 build.ninja.sample
    Sample build.ninja file (I copy this into new projects
    and then adjust as necessary)
