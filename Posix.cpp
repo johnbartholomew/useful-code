@@ -19,17 +19,20 @@ static void __attribute__((format(printf, 1, 2))) emit_warning(const char *fmt, 
 
 FileDes::~FileDes() {
 	if (m_fd != -1) {
-		int e;
-		do {
-			e = 0;
-			if (::close(m_fd) == -1) {
-				e = errno;
-				switch (e) {
-					case EBADF: emit_warning("fd %d was invalid on close", m_fd); break;
-					case EIO: emit_warning("fd %d caused an I/O error on close", m_fd); break;
-				}
+		if (::close(m_fd) == -1) {
+			// on most platforms, if close fails there's really nothing sensible we can do to recover,
+			// so we just emit a warning.
+			// In particular, we shouldn't retry if we get EINTR, because on several platforms the
+			// file descriptor is *already closed* in that situation, and re-trying may close some other
+			// fd that was just opened by another thread
+			int e = errno;
+			switch (e) {
+				case EBADF: emit_warning("fd %d was invalid on close", m_fd); break;
+				default:
+					emit_warning("fd %d caused an I/O error on close (errno = %d)", m_fd, e);
+					break;
 			}
-		} while (e == EINTR);
+		}
 	}
 }
 
