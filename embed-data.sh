@@ -29,14 +29,22 @@
 # (ie, X_SIZE == X_END - X)
 
 ALIGN=16
+PREFIX=DATA_
+BASENAME_ONLY=no
 
-while getopts o:a: flag; do
+while getopts bo:a:p: flag; do
 	case "$flag" in
 		o)
 			OUTPATH_ARG="-o$OPTARG";
 			;;
 		a)
 			ALIGN="$OPTARG";
+			;;
+		p)
+			PREFIX="$OPTARG";
+			;;
+		b)
+			BASENAME_ONLY=yes;
 			;;
 		?)
 			printf 'Unknown argument';
@@ -52,7 +60,11 @@ shift $((OPTIND - 1));
 
 	while test "$#" -gt 0; do
 		INPATH="$1"
-		SYM="$(printf 'DATA_%s' "$INPATH" | tr '/.[:lower:]' '__[:upper:]')"
+		SYM="$INPATH"
+		if test "$BASENAME_ONLY" = "yes"; then
+			SYM="$(basename "$SYM")"
+		fi
+		SYM="$(printf '%s%s' "$PREFIX" "$SYM" | tr '/.[:lower:]' '__[:upper:]')"
 		shift 1;
 
 cat <<END_SECTION
